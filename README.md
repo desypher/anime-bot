@@ -13,9 +13,10 @@ WATCH_PARTY_CHANNEL_ID=voice_channel_id
 WATCH_PARTY_HOST_ROLE_ID=role_id
 ```
 
-## Acknowledgements
+## Using
 
  - [AniList API](https://docs.anilist.co/)
+ - [discord.js](https://discord.js.org/)
     
 ## License
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
