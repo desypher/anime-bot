@@ -18,6 +18,7 @@ client.once('ready', async () => {
   console.log(`Logged in as ${client.user.tag}`);
   await mongoose.connect(process.env.MONGO_URI);
   console.log("Connected to MongoDB");
+  client.user.setActivity('anime', { type: 'WATCHING' });
 });
 
 client.on('interactionCreate', async interaction => {
