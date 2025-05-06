@@ -13,3 +13,7 @@ WATCH_PARTY_CHANNEL_ID=voice_channel_id
 WATCH_PARTY_HOST_ROLE_ID=role_id
 ```
     
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
