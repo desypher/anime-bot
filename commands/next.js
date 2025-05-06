@@ -22,9 +22,18 @@ const query = gql`
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("next")
+    .setDefaultMemberPermissions("0")
     .setDescription("Advances to the next episode in the watch party"),
 
   async execute(interaction) {
+    const allowedRoleId = process.env.WATCH_PARTY_HOST_ROLE_ID;
+
+    if (!interaction.member.roles.cache.has(allowedRoleId)) {
+      return interaction.reply({
+        content: "❌ Only Watch Party Hosts can use this command.",
+        ephemeral: true,
+      });
+    }
     const party = await WatchParty.findOne({ guildId: interaction.guildId });
 
     if (!party) {

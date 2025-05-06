@@ -25,6 +25,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("setupparty")
     .setDescription("Create a new anime watch party")
+    .setDefaultMemberPermissions("0")
     .addStringOption((opt) =>
       opt
         .setName("day")
@@ -59,6 +60,15 @@ module.exports = {
         .setRequired(false)
     ),
   async execute(interaction) {
+    const allowedRoleId = process.env.WATCH_PARTY_HOST_ROLE_ID;
+
+    if (!interaction.member.roles.cache.has(allowedRoleId)) {
+      return interaction.reply({
+        content: "❌ Only Watch Party Hosts can use this command.",
+        ephemeral: true,
+      });
+    }
+
     await interaction.deferReply();
 
     const day = interaction.options.getString("day");

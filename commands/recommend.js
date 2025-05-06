@@ -87,7 +87,7 @@ module.exports = {
       );
 
       await interaction.editReply({
-        content: `🎉 Here are 5 anime you might enjoy:`,
+        content: `🎉 Here are 5 animes you might enjoy:`,
         embeds,
       });
     } catch (error) {

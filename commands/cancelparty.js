@@ -9,9 +9,18 @@ const WatchParty = require("../database/WatchParty");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("cancelparty")
+    .setDefaultMemberPermissions("0")
     .setDescription("Cancel a scheduled watch party"),
 
   async execute(interaction) {
+    const allowedRoleId = process.env.WATCH_PARTY_HOST_ROLE_ID;
+
+    if (!interaction.member.roles.cache.has(allowedRoleId)) {
+      return interaction.reply({
+        content: "❌ Only Watch Party Hosts can use this command.",
+        ephemeral: true,
+      });
+    }
     const guildId = interaction.guildId;
     const parties = await WatchParty.find({ guildId });
 

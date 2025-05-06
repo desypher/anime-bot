@@ -5,6 +5,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("setepisode")
     .setDescription("Sets the current episode number")
+    .setDefaultMemberPermissions("0")
     .addIntegerOption((option) =>
       option
         .setName("number")
@@ -13,6 +14,14 @@ module.exports = {
     ),
 
   async execute(interaction) {
+    const allowedRoleId = process.env.WATCH_PARTY_HOST_ROLE_ID;
+
+    if (!interaction.member.roles.cache.has(allowedRoleId)) {
+      return interaction.reply({
+        content: "❌ Only Watch Party Hosts can use this command.",
+        ephemeral: true,
+      });
+    }
     const episode = interaction.options.getInteger("number");
 
     const party = await CurrentAnime.findOne({ guildId: interaction.guildId });

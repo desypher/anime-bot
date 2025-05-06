@@ -28,6 +28,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("setanime")
     .setDescription("Sets the anime for the watch party")
+    .setDefaultMemberPermissions("0")
     .addStringOption((option) =>
       option
         .setName("title")
@@ -37,6 +38,15 @@ module.exports = {
 
   async execute(interaction) {
     const search = interaction.options.getString("title");
+
+    const allowedRoleId = process.env.WATCH_PARTY_HOST_ROLE_ID;
+
+    if (!interaction.member.roles.cache.has(allowedRoleId)) {
+      return interaction.reply({
+        content: "❌ Only Watch Party Hosts can use this command.",
+        ephemeral: true,
+      });
+    }
 
     await interaction.deferReply();
 
