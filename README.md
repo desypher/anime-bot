@@ -1,8 +1,8 @@
 # Discord Anime Watch Party Bot (Terebi)
-This is a bot I made to create watch parties on Discord, it can also recommend anime and stuff :D
+This is a bot I made to create watch parties on Discord, it can also recommend anime and stuff. :D
 
 ## Installation
-Create a .env file and replace the values with your specific needs
+Create a `.env` in the base directory and replace the values with your own.
 
 ```
 BOT_TOKEN=bot_token
