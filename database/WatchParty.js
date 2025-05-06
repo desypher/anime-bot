@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const WatchPartySchema = new mongoose.Schema({
   guildId: String,
@@ -11,7 +11,7 @@ const WatchPartySchema = new mongoose.Schema({
   time: String,
   duration: String,
   repeat: Boolean,
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('WatchParty', WatchPartySchema);
+module.exports = mongoose.model("WatchParty", WatchPartySchema);
