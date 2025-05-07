@@ -3,7 +3,7 @@ const watchParty = require("../database/helpers/watchparties");
 const dayjs = require("dayjs");
 
 module.exports = function initializeWatchPartyCron(client) {
-  cron.schedule("*/1 * * * *", async () => {
+  cron.schedule("*/10 * * * *", async () => {
     console.log("Checking for completed watch parties...");
 
     try {

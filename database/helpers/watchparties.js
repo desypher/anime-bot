@@ -87,7 +87,7 @@ async function updateEpisode(guildId, scheduledEventId, animeId, nextEpisode) {
   }
 }
 
-async function updateParty(guildId, updateData) {
+async function updateParty(selectedPartyId, updateData) {
   if (db.isMongo()) {
     return await WatchParty.findOneAndUpdate({ guildId }, updateData, {
       new: true,
@@ -95,8 +95,8 @@ async function updateParty(guildId, updateData) {
   } else {
     const { paused } = updateData;
     const [result] = await db.mysqlPool.execute(
-      "UPDATE watch_parties SET paused = ? WHERE guildId = ?",
-      [paused, guildId]
+      "UPDATE watch_parties SET paused = ? WHERE id = ?",
+      [paused, selectedPartyId]
     );
     return result;
   }
