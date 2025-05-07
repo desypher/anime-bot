@@ -2,6 +2,8 @@
 
 This is a bot I made to create watch parties on Discord, it can also recommend anime and stuff. :D
 
+The primary database is MongoDB but have since added support for MySQL, all you have to supply your `.env` file with necessary values.
+
 ## Installation
 
 1. Create a `.env` in the base directory and replace the values with your own. If you are using MongoDB then you can leave the MySQL details as `""`.
