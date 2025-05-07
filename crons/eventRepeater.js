@@ -83,6 +83,49 @@ module.exports = function initializeWatchPartyCron(client) {
       console.error("Error in watch party cron job:", err);
     }
   });
+  cron.schedule("*/10 * * * *", async () => {
+    console.log("Checking notifications that need to go out...");
+
+    try {
+      const parties = await watchParty.getPartiesByGuild(process.env.GUILD_ID);
+
+      for (const party of parties) {
+        if (party.paused) {
+          console.log(`Skipping ${party.animeTitle} watch party due to pause.`);
+          continue;
+        }
+
+        const currentTime = dayjs().tz("Africa/Johannesburg");
+        const eventEndTime = dayjs(party.eventEndTime);
+
+        const startTime = dayjs(party.eventStartTime).tz("Africa/Johannesburg"); // assuming this is ISO format or Date
+
+        const minutesUntilStart = startTime.diff(currentTime, "minute");
+        if (
+          minutesUntilStart <= 15 &&
+          minutesUntilStart >= 0 &&
+          !party.notified
+        ) {
+          const guild = client.guilds.cache.get(party.guildId);
+          if (!guild) continue;
+
+          const textChannel = guild.channels.cache.get(
+            process.env.WATCH_PARTY_TEXT_CHANNEL_ID
+          );
+          const roleId = process.env.WATCH_PARTY_ROLE_ID;
+          if (textChannel) {
+            await textChannel.send({
+              content: `🎉 The watch party for **${party.animeTitle} - Episode ${party.currentEpisode}** is starting soon! See you in <#${process.env.WATCH_PARTY_CHANNEL_ID}> <@&${roleId}>`,
+            });
+
+            await watchParty.setNotified(party.guildId, party.scheduledEventId);
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Error in watch party notification cron job:", err);
+    }
+  });
 };
 
 async function createPartyEvent(guild, party, startTime, endTime) {
