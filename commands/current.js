@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const { gql } = require("graphql-tag");
-const CurrentAnime = require("../database/helpers/currentanime");
+const CurrentAnime = require("../database/helpers/currentAnime");
 
 const endpoint = "https://graphql.anilist.co";
 
