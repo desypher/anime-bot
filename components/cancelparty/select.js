@@ -5,17 +5,22 @@ module.exports = {
 
   async execute(interaction) {
     const selectedId = interaction.values[0];
-    const guildId = interaction.guildId;
 
     try {
-      const party = await WatchParty.deleteParty(selectedId);
+      // Fetch party info first
+      const parties = await WatchParty.getPartyByGuild(interaction.guildId);
+      const party = parties.find(
+        (p) => (p.id || p._id).toString() === selectedId
+      );
 
       if (!party) {
         return interaction.update({
-          content: "❌ Could not find or delete the watch party.",
+          content: "❌ Could not find that watch party.",
           components: [],
         });
       }
+
+      await WatchParty.deleteParty(selectedId);
 
       await interaction.update({
         content: `✅ Canceled watch party for **${party.animeTitle}** on **${party.day}** at **${party.time}**.`,
