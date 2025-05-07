@@ -20,7 +20,7 @@ module.exports = function initializeWatchPartyCron(client) {
           continue;
         }
 
-        const currentTime = dayjs().tz("Africa/Johannesburg");
+        const currentTime = dayjs().tz(process.env.TZ);
         const eventEndTime = dayjs(party.eventEndTime);
 
         if (currentTime.isAfter(eventEndTime)) {
@@ -71,10 +71,10 @@ module.exports = function initializeWatchPartyCron(client) {
           continue;
         }
 
-        const currentTime = dayjs().tz("Africa/Johannesburg");
+        const currentTime = dayjs().tz(process.env.TZ);
         const eventEndTime = dayjs(party.eventEndTime);
 
-        const startTime = dayjs(party.eventStartTime).tz("Africa/Johannesburg"); // assuming this is ISO format or Date
+        const startTime = dayjs(party.eventStartTime).tz(process.env.TZ); // assuming this is ISO format or Date
 
         const minutesUntilStart = startTime.diff(currentTime, "minute");
         if (
@@ -112,8 +112,8 @@ async function createPartyEvent(guild, party, startTime, endTime) {
   const scheduledEvent = await guild.scheduledEvents.create({
     channel: voiceChannel,
     name: animeTitle,
-    scheduledStartTime: startTime.tz("Africa/Johannesburg").toDate(),
-    scheduledEndTime: endTime.tz("Africa/Johannesburg").toDate(),
+    scheduledStartTime: startTime.tz(process.env.TZ).toDate(),
+    scheduledEndTime: endTime.tz(process.env.TZ).toDate(),
     privacyLevel: 2,
     entityType: 2,
     description: `🎬 Episode ${currentEpisode + 1}`,
@@ -127,8 +127,8 @@ async function createPartyEvent(guild, party, startTime, endTime) {
     guildId,
     party.scheduledEventId,
     scheduledEvent.id,
-    startTime.toDate(),
-    endTime.toDate()
+    startTime.tz(process.env.TZ).toDate(),
+    endTime.tz(process.env.TZ).toDate()
   );
 }
 

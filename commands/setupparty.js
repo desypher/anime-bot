@@ -157,7 +157,7 @@ module.exports = {
       const minute = parseInt(minutePart) || 0;
       const eventHour = parseInt(hour);
       const startTime = targetDate
-        .tz("Africa/Johannesburg")
+        .tz(process.env.TZ)
         .hour(eventHour)
         .minute(minute)
         .second(0);
@@ -193,8 +193,8 @@ module.exports = {
         duration: duration,
         repeat: repeat,
         scheduledEventId: scheduledEvent.id,
-        eventStartTime: startTime.toDate(),
-        eventEndTime: endTime.toDate(),
+        eventStartTime: startTime.tz(process.env.TZ).toDate(),
+        eventEndTime: endTime.tz(process.env.TZ).toDate(),
       });
     } catch (err) {
       console.error(err);
