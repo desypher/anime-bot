@@ -4,6 +4,11 @@ const currentAnime = require("../database/helpers/currentAnime");
 const watchParty = require("../database/helpers/watchparties");
 const endpoint = "https://graphql.anilist.co";
 const dayjs = require("dayjs");
+const utc = require("dayjs/plugin/utc");
+const timezone = require("dayjs/plugin/timezone");
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const searchAnimeQuery = gql`
   query ($search: String) {
@@ -151,7 +156,11 @@ module.exports = {
       const [hour, minutePart] = time.toLowerCase().replace(" ", "").split(":");
       const minute = parseInt(minutePart) || 0;
       const eventHour = parseInt(hour);
-      const startTime = targetDate.hour(eventHour).minute(minute).second(0);
+      const startTime = targetDate
+        .tz("Africa/Johannesburg")
+        .hour(eventHour)
+        .minute(minute)
+        .second(0);
       const endTime = startTime.add(parseDuration(duration), "minute");
 
       const channelId = process.env.WATCH_PARTY_CHANNEL_ID;

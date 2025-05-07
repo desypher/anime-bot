@@ -1,6 +1,11 @@
 const cron = require("node-cron");
 const watchParty = require("../database/helpers/watchparties");
 const dayjs = require("dayjs");
+const utc = require("dayjs/plugin/utc");
+const timezone = require("dayjs/plugin/timezone");
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 module.exports = function initializeWatchPartyCron(client) {
   cron.schedule("*/10 * * * *", async () => {
@@ -64,8 +69,8 @@ async function createPartyEvent(guild, party, startTime, endTime) {
   await guild.scheduledEvents.create({
     channel: voiceChannel,
     name: animeTitle,
-    scheduledStartTime: startTime.toDate(),
-    scheduledEndTime: endTime.toDate(),
+    scheduledStartTime: startTime.tz("Africa/Johannesburg").toDate(),
+    scheduledEndTime: endTime.tz("Africa/Johannesburg").toDate(),
     privacyLevel: 2,
     entityType: 2,
     description: `🎬 Episode ${currentEpisode + 1}`,
