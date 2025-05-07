@@ -7,8 +7,6 @@ module.exports = {
     const selectedId = interaction.values[0];
 
     try {
-      console.log("here");
-      // Fetch party info first
       const parties = await WatchParty.getPartyByGuild(interaction.guildId);
       const party = parties.find(
         (p) => (p.id || p._id).toString() === selectedId
@@ -22,7 +20,6 @@ module.exports = {
       }
 
       await WatchParty.deleteParty(selectedId);
-      console.log("Selected party ID to delete:", selectedId);
 
       await interaction.update({
         content: `✅ Canceled watch party for **${party.animeTitle}** on **${party.day}** at **${party.time}**.`,
