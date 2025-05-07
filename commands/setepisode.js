@@ -28,7 +28,7 @@ module.exports = {
     }
     const episode = interaction.options.getInteger("number");
 
-    const party = await currentAnime.getCurrent(guildId);
+    const party = await currentAnime.getCurrent(interaction.guildId);
 
     if (!party) {
       return interaction.reply({
