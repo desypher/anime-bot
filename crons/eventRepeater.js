@@ -23,30 +23,6 @@ module.exports = function initializeWatchPartyCron(client) {
         const currentTime = dayjs().tz("Africa/Johannesburg");
         const eventEndTime = dayjs(party.eventEndTime);
 
-        const startTime = dayjs(party.eventStartTime).tz("Africa/Johannesburg"); // assuming this is ISO format or Date
-
-        const minutesUntilStart = startTime.diff(currentTime, "minute");
-        if (
-          minutesUntilStart <= 15 &&
-          minutesUntilStart >= 0 &&
-          !party.notified
-        ) {
-          const guild = client.guilds.cache.get(party.guildId);
-          if (!guild) continue;
-
-          const textChannel = guild.channels.cache.get(
-            process.env.WATCH_PARTY_TEXT_CHANNEL_ID
-          );
-          const roleId = process.env.WATCH_PARTY_ROLE_ID;
-          if (textChannel) {
-            await textChannel.send({
-              content: `🎉 The watch party for **${party.animeTitle} - Episode ${party.currentEpisode}** is starting soon! See you in <#${process.env.WATCH_PARTY_CHANNEL_ID}> <@&${roleId}>`,
-            });
-
-            await watchParty.setNotified(party.guildId, party.scheduledEventId);
-          }
-        }
-
         if (currentTime.isAfter(eventEndTime)) {
           console.log(
             `Event for ${party.animeTitle} has ended, updating episode...`
