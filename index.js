@@ -8,7 +8,9 @@ const {
 const mongoose = require("mongoose");
 const fs = require("fs");
 const path = require("path");
-const CurrentAnime = require("./database/CurrentAnime");
+const CurrentAnime = require("./database/helpers/currentAnime");
+const db = require("./db");
+const { env } = require("process");
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -24,10 +26,9 @@ for (const file of commandFiles) {
 
 client.once("ready", async () => {
   console.log(`Logged in as ${client.user.tag}`);
-  await mongoose.connect(process.env.MONGO_URI);
-  console.log("Connected to MongoDB");
+  await db.initDatabases();
 
-  const currentAnime = await CurrentAnime.findOne();
+  const currentAnime = await CurrentAnime.getCurrent(process.env.GUILD_ID);
   if (currentAnime) {
     client.user.setPresence({
       activities: [

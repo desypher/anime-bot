@@ -4,7 +4,7 @@ const {
   StringSelectMenuBuilder,
   StringSelectMenuOptionBuilder,
 } = require("discord.js");
-const WatchParty = require("../database/WatchParty");
+const WatchParty = require("../database/helpers/watchparties");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -22,7 +22,7 @@ module.exports = {
       });
     }
     const guildId = interaction.guildId;
-    const parties = await WatchParty.find({ guildId });
+    const parties = await WatchParty.getPartyByGuild(guildId);
 
     if (!parties.length) {
       return interaction.reply(
@@ -33,7 +33,7 @@ module.exports = {
     const options = parties.map((party) =>
       new StringSelectMenuOptionBuilder()
         .setLabel(`${party.animeTitle} - ${party.day} at ${party.time}`)
-        .setValue(party._id.toString())
+        .setValue(party.id.toString())
     );
 
     const selectMenu = new StringSelectMenuBuilder()

@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const { gql } = require("graphql-tag");
-const WatchParty = require("../database/WatchParty");
+const currentAnime = require("../database/helpers/currentAnime");
 
 const endpoint = "https://graphql.anilist.co";
 
@@ -34,7 +34,7 @@ module.exports = {
         ephemeral: true,
       });
     }
-    const party = await WatchParty.findOne({ guildId: interaction.guildId });
+    const party = await currentAnime.getCurrent(interaction.guildId);
 
     if (!party) {
       return interaction.reply({
@@ -58,8 +58,7 @@ module.exports = {
         });
       }
 
-      party.currentEpisode = nextEpisode;
-      await party.save();
+      await currentAnime.setEpisode(interaction.guildId, nextEpisode);
 
       const embed = new EmbedBuilder()
         .setTitle(`${anime.title.romaji} - Episode ${nextEpisode}`)

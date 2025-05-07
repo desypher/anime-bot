@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const WatchParty = require("../database/CurrentAnime");
 const { gql } = require("graphql-tag");
-const CurrentAnime = require("../database/CurrentAnime");
+const CurrentAnime = require("../database/helpers/currentanime");
 
 const endpoint = "https://graphql.anilist.co";
 
@@ -26,7 +25,7 @@ module.exports = {
     .setDescription("Shows the current anime and episode being watched"),
 
   async execute(interaction) {
-    const party = await CurrentAnime.findOne({ guildId: interaction.guildId });
+    const party = await CurrentAnime.getCurrent(interaction.guildId);
 
     if (!party) {
       return interaction.reply({
@@ -48,9 +47,7 @@ module.exports = {
         : "No description available.";
 
       const embed = new EmbedBuilder()
-        .setTitle(
-          `${anime.title.romaji} ${anime.title.english} - Episode ${party.currentEpisode}`
-        )
+        .setTitle(`${anime.title.romaji} - Episode ${party.currentEpisode}`)
         .setDescription(
           cleanDescription.length > 400
             ? cleanDescription.slice(0, 400) + "..."

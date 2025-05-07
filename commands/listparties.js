@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const WatchParty = require("../database/WatchParty");
+const WatchParty = require("../database/helpers/watchparties");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -12,8 +12,7 @@ module.exports = {
     const guildId = interaction.guildId;
 
     try {
-      const parties = await WatchParty.find({ guildId });
-
+      const parties = await WatchParty.getPartyByGuild(guildId);
       if (!parties.length) {
         return interaction.editReply(
           "😕 No watch parties are currently scheduled."
@@ -24,7 +23,7 @@ module.exports = {
         return new EmbedBuilder()
           .setTitle(party.animeTitle)
           .setDescription(
-            `🎬 Episode ${party.episode}${
+            `🎬 Episode ${party.currentEpisode}${
               party.season ? ` | ${party.season}` : ""
             }`
           )

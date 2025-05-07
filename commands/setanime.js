@@ -4,7 +4,7 @@ const {
   ActivityType,
 } = require("discord.js");
 const { gql } = require("graphql-tag");
-const CurrentAnime = require("../database/CurrentAnime");
+const currentAnime = require("../database/helpers/currentAnime");
 
 const endpoint = "https://graphql.anilist.co";
 
@@ -60,17 +60,14 @@ module.exports = {
         return interaction.editReply("Anime not found.");
       }
 
-      // Save to MongoDB
-      await CurrentAnime.findOneAndUpdate(
-        { guildId: interaction.guildId },
-        {
-          guildId: interaction.guildId,
-          animeId: anime.id,
-          animeTitle: anime.title.romaji,
-          currentEpisode: 1,
-        },
-        { upsert: true }
+      // Save to DB
+      await currentAnime.setCurrent(
+        interaction.guildId,
+        anime.id,
+        anime.title.romaji,
+        1
       );
+
       const stripHtml = (html) => html.replace(/<\/?[^>]+(>|$)/g, "");
       const cleanDescription = anime.description
         ? stripHtml(anime.description)
@@ -101,7 +98,7 @@ module.exports = {
 
       interaction.client.user.setPresence({
         activities: [{ name: anime.title.romaji, type: ActivityType.Watching }],
-        status: "online", // other options: 'idle', 'dnd', 'invisible'
+        status: "online",
       });
     } catch (error) {
       console.error(error);

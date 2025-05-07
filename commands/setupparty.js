@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const { gql } = require("graphql-tag");
-const WatchParty = require("../database/WatchParty");
-const CurrentAnime = require("../database/CurrentAnime"); // your anime tracker
+const currentAnime = require("../database/helpers/currentAnime");
+const watchParty = require("../database/helpers/watchparties");
 const endpoint = "https://graphql.anilist.co";
 const dayjs = require("dayjs");
 
@@ -98,24 +98,24 @@ module.exports = {
         return interaction.editReply("❌ Anime not found.");
       }
 
-      // Save watch party to MongoDB
-      const party = await WatchParty.create({
-        guildId,
+      //Save to DB
+      await watchParty.createParty({
+        guildId: guildId,
         animeId: anime.id,
         animeTitle: anime.title.romaji || anime.title.english,
         coverImage: anime.coverImage.large,
-        day,
-        time,
-        duration,
+        currentEpisode: episode,
         season: season ? `Season ${season}` : null,
-        episode,
-        repeat,
+        day: day,
+        time: time,
+        duration: duration,
+        repeat: repeat,
       });
 
       // Set current anime if not already set
-      const existing = await CurrentAnime.findOne({ guildId });
+      const existing = await currentAnime.getCurrent(interaction.guildId);
       if (!existing) {
-        await CurrentAnime.create({
+        await currentAnime.setCurrent(interaction.guildId, {
           guildId,
           animeId: anime.id,
           title: anime.title.romaji || anime.title.english,
@@ -183,7 +183,7 @@ module.exports = {
         entityMetadata: {
           location: "Online - Watch Party",
         },
-        image: await fetchAndConvertImage(party.coverImage),
+        image: await fetchAndConvertImage(anime.coverImage.large),
       });
     } catch (err) {
       console.error(err);

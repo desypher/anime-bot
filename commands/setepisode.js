@@ -1,5 +1,9 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const WatchParty = require("../database/CurrentAnime");
+const {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  Integration,
+} = require("discord.js");
+const currentAnime = require("../database/helpers/currentAnime");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -24,7 +28,7 @@ module.exports = {
     }
     const episode = interaction.options.getInteger("number");
 
-    const party = await CurrentAnime.findOne({ guildId: interaction.guildId });
+    const party = await currentAnime.getCurrent(guildId);
 
     if (!party) {
       return interaction.reply({
@@ -33,8 +37,7 @@ module.exports = {
       });
     }
 
-    party.currentEpisode = episode;
-    await party.save();
+    await currentAnime.setEpisode(interaction.guildId, episode);
 
     const embed = new EmbedBuilder()
       .setTitle(`${party.animeTitle} - Episode ${episode}`)

@@ -15,6 +15,7 @@
     "graphql-request": "^7.1.2",
     "graphql-tag": "^2.12.6",
     "mongoose": "^8.14.1",
+    "mysql2": "^3.14.1",
     "node-fetch": "^3.3.2"
   }
 }
