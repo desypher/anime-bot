@@ -55,7 +55,20 @@ async function getPartyByGuild(guildId) {
   }
 }
 
+async function deleteParty(selectedId) {
+  if (db.isMongo()) {
+    return await WatchParty.deleteOne({ _id: selectedId });
+  } else {
+    const [result] = await db.mysqlPool.execute(
+      "DELETE FROM watch_parties WHERE id = ?",
+      [selectedId]
+    );
+    return result;
+  }
+}
+
 module.exports = {
   createParty,
   getPartyByGuild,
+  deleteParty,
 };

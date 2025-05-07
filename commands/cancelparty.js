@@ -33,7 +33,7 @@ module.exports = {
     const options = parties.map((party) =>
       new StringSelectMenuOptionBuilder()
         .setLabel(`${party.animeTitle} - ${party.day} at ${party.time}`)
-        .setValue(party.id.toString())
+        .setValue((party.id || party._id).toString())
     );
 
     const selectMenu = new StringSelectMenuBuilder()

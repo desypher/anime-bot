@@ -1,4 +1,4 @@
-const WatchParty = require("../../models/WatchParty");
+const WatchParty = require("../../database/helpers/watchparties");
 
 module.exports = {
   customId: "cancel_party_select",
@@ -8,10 +8,7 @@ module.exports = {
     const guildId = interaction.guildId;
 
     try {
-      const party = await WatchParty.findOneAndDelete({
-        _id: selectedId,
-        guildId,
-      });
+      const party = await WatchParty.deleteParty(guildId, selectedId);
 
       if (!party) {
         return interaction.update({
