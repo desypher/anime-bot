@@ -15,6 +15,11 @@ module.exports = function initializeWatchPartyCron(client) {
       const repeatingParties = await watchParty.getAllRepeating();
 
       for (const party of repeatingParties) {
+        if (party.paused) {
+          console.log(`Skipping ${party.animeTitle} watch party due to pause.`);
+          continue;
+        }
+
         const currentTime = dayjs().tz("Africa/Johannesburg");
         const eventEndTime = dayjs(party.eventEndTime);
 
@@ -40,11 +45,6 @@ module.exports = function initializeWatchPartyCron(client) {
 
             await watchParty.setNotified(party.guildId, party.scheduledEventId);
           }
-        }
-
-        if (party.paused) {
-          console.log(`Skipping ${party.animeTitle} watch party due to pause.`);
-          continue;
         }
 
         if (currentTime.isAfter(eventEndTime)) {
