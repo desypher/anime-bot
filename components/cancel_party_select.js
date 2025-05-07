@@ -7,7 +7,7 @@ module.exports = {
     const selectedId = interaction.values[0];
 
     try {
-      const parties = await WatchParty.getPartyByGuild(interaction.guildId);
+      const parties = await WatchParty.getPartiesByGuild(interaction.guildId);
       const party = parties.find(
         (p) => (p.id || p._id).toString() === selectedId
       );

@@ -12,7 +12,7 @@ module.exports = {
     const guildId = interaction.guildId;
 
     try {
-      const parties = await WatchParty.getPartyByGuild(guildId);
+      const parties = await WatchParty.getPartiesByGuild(guildId);
       if (!parties.length) {
         return interaction.editReply(
           "😕 No watch parties are currently scheduled."

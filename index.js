@@ -1,4 +1,5 @@
 require("dotenv").config();
+const initializeWatchPartyCron = require("./crons/eventRepeater");
 const {
   Client,
   GatewayIntentBits,
@@ -26,6 +27,8 @@ for (const file of commandFiles) {
 
 client.once("ready", async () => {
   console.log(`Logged in as ${client.user.tag}`);
+  initializeWatchPartyCron(client);
+  console.log("Cron started");
   await db.initDatabases();
 
   const currentAnime = await CurrentAnime.getCurrent(process.env.GUILD_ID);

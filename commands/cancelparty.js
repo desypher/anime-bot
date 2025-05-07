@@ -22,7 +22,7 @@ module.exports = {
       });
     }
     const guildId = interaction.guildId;
-    const parties = await WatchParty.getPartyByGuild(guildId);
+    const parties = await WatchParty.getPartiesByGuild(guildId);
 
     if (!parties.length) {
       return interaction.reply(

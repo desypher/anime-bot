@@ -16,6 +16,7 @@
     "graphql-tag": "^2.12.6",
     "mongoose": "^8.14.1",
     "mysql2": "^3.14.1",
+    "node-cron": "^3.0.3",
     "node-fetch": "^3.3.2"
   }
 }

@@ -11,7 +11,10 @@ const WatchPartySchema = new mongoose.Schema({
   time: String,
   duration: String,
   repeat: Boolean,
-  createdAt: { type: Date, default: Date.now },
+  paused: { type: Boolean, default: false },
+  eventStartTime: { type: Date, default: null },
+  eventEndTime: { type: Date, default: null },
+  scheduledEventId: { type: String, default: null },
 });
 
 module.exports = mongoose.model("WatchParty", WatchPartySchema);

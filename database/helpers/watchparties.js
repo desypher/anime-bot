@@ -17,13 +17,16 @@ async function createParty(data) {
       time,
       duration,
       repeat,
+      scheduledEventId,
+      eventStartTime,
+      eventEndTime,
     } = data;
 
     const [result] = await db.mysqlPool.execute(
       `
       INSERT INTO watch_parties
-      (guildId, animeId, animeTitle, coverImage, currentEpisode, season, day, time, duration, \`repeat\`)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      (guildId, animeId, animeTitle, coverImage, currentEpisode, season, day, time, duration, \`repeat\`, scheduledEventId, eventStartTime, eventEndTime)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,
       [
         guildId,
@@ -36,6 +39,9 @@ async function createParty(data) {
         time,
         duration,
         repeat,
+        scheduledEventId,
+        eventStartTime,
+        eventEndTime,
       ]
     );
 
@@ -43,7 +49,7 @@ async function createParty(data) {
   }
 }
 
-async function getPartyByGuild(guildId) {
+async function getPartiesByGuild(guildId) {
   if (db.isMongo()) {
     return await WatchParty.findOne({ guildId });
   } else {
@@ -67,8 +73,91 @@ async function deleteParty(selectedId) {
   }
 }
 
+async function updateEpisode(guildId, scheduledEventId, animeId, nextEpisode) {
+  if (db.isMongo()) {
+    return await WatchParty.updateOne(
+      { guildId, animeId },
+      { $set: { currentEpisode: nextEpisode } }
+    );
+  } else {
+    await db.mysqlPool.execute(
+      "UPDATE watch_parties SET currentEpisode = ? WHERE guildId = ? AND scheduledEventId = ? AND animeId = ? ",
+      [nextEpisode, guildId, scheduledEventId, animeId]
+    );
+  }
+}
+
+async function updateParty(guildId, updateData) {
+  if (db.isMongo()) {
+    return await WatchParty.findOneAndUpdate({ guildId }, updateData, {
+      new: true,
+    });
+  } else {
+    const { paused } = updateData;
+    const [result] = await db.mysqlPool.execute(
+      "UPDATE watch_parties SET paused = ? WHERE guildId = ?",
+      [paused, guildId]
+    );
+    return result;
+  }
+}
+
+async function getPartyById(partyId) {
+  if (db.isMongo()) {
+    // Find the party by its MongoDB _id
+    return await WatchParty.findById(partyId);
+  } else {
+    // MySQL query to fetch the party by ID
+    const [rows] = await db.mysqlPool.execute(
+      "SELECT * FROM watch_parties WHERE id = ?",
+      [partyId]
+    );
+    return rows[0] || null; // Return the first row or null if not found
+  }
+}
+
+async function getAllRepeating() {
+  if (db.isMongo()) {
+    // Find all parties where the 'repeat' field is true
+    return await WatchParty.find({ repeat: true });
+  } else {
+    // MySQL query to fetch all repeating watch parties
+    const [rows] = await db.mysqlPool.execute(
+      "SELECT * FROM watch_parties WHERE `repeat` = 1"
+    );
+    return rows || []; // Return the rows or an empty array if no repeating parties are found
+  }
+}
+
+async function updatePartyEventTimes(
+  guildId,
+  scheduledEventId,
+  startTime,
+  endTime
+) {
+  if (db.isMongo()) {
+    await WatchParty.findOneAndUpdate(
+      { guildId },
+      {
+        eventStartTime: startTime,
+        eventEndTime: endTime,
+      }
+    );
+  } else {
+    await db.mysqlPool.execute(
+      `UPDATE watch_parties SET eventStartTime = ?, eventEndTime = ? WHERE guildId = ? AND scheduledEventId = ?`,
+      [startTime, endTime, guildId, scheduledEventId]
+    );
+  }
+}
+
 module.exports = {
   createParty,
-  getPartyByGuild,
+  getPartiesByGuild,
   deleteParty,
+  updateEpisode,
+  updateParty,
+  getPartyById,
+  getAllRepeating,
+  updatePartyEventTimes,
 };

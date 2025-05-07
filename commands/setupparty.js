@@ -98,20 +98,6 @@ module.exports = {
         return interaction.editReply("❌ Anime not found.");
       }
 
-      //Save to DB
-      await watchParty.createParty({
-        guildId: guildId,
-        animeId: anime.id,
-        animeTitle: anime.title.romaji || anime.title.english,
-        coverImage: anime.coverImage.large,
-        currentEpisode: episode,
-        season: season ? `Season ${season}` : null,
-        day: day,
-        time: time,
-        duration: duration,
-        repeat: repeat,
-      });
-
       // Set current anime if not already set
       const existing = await currentAnime.getCurrent(interaction.guildId);
       if (!existing) {
@@ -165,7 +151,6 @@ module.exports = {
       const [hour, minutePart] = time.toLowerCase().replace(" ", "").split(":");
       const minute = parseInt(minutePart) || 0;
       const eventHour = parseInt(hour);
-      console.log(process.env.WATCH_PARTY_CHANNEL_ID);
       const startTime = targetDate.hour(eventHour).minute(minute).second(0);
       const endTime = startTime.add(parseDuration(duration), "minute");
 
@@ -184,6 +169,23 @@ module.exports = {
           location: "Online - Watch Party",
         },
         image: await fetchAndConvertImage(anime.coverImage.large),
+      });
+
+      //Save to DB
+      await watchParty.createParty({
+        guildId: guildId,
+        animeId: anime.id,
+        animeTitle: anime.title.romaji || anime.title.english,
+        coverImage: anime.coverImage.large,
+        currentEpisode: episode,
+        season: season ? `Season ${season}` : null,
+        day: day,
+        time: time,
+        duration: duration,
+        repeat: repeat,
+        scheduledEventId: scheduledEvent.id,
+        eventStartTime: startTime.toDate(),
+        eventEndTime: endTime.toDate(),
       });
     } catch (err) {
       console.error(err);
