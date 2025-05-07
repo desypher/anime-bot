@@ -8,7 +8,7 @@ module.exports = {
     const guildId = interaction.guildId;
 
     try {
-      const party = await WatchParty.deleteParty(guildId, selectedId);
+      const party = await WatchParty.deleteParty(selectedId);
 
       if (!party) {
         return interaction.update({
