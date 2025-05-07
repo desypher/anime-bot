@@ -1,13 +1,13 @@
 {
   "name": "anime-bot",
   "version": "1.0.0",
-  "description": "An anime bot for Awiiice's Discord Server",
+  "description": "A watch party bot specifically for anime",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Desypher",
+  "license": "MIT",
   "dependencies": {
     "dayjs": "^1.11.13",
     "discord.js": "^14.19.3",
