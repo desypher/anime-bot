@@ -129,9 +129,10 @@ async function getAllRepeating() {
   }
 }
 
-async function updatePartyEventTimes(
+async function updatePartyEvent(
   guildId,
   scheduledEventId,
+  newScheduledEventId,
   startTime,
   endTime
 ) {
@@ -145,8 +146,22 @@ async function updatePartyEventTimes(
     );
   } else {
     await db.mysqlPool.execute(
-      `UPDATE watch_parties SET eventStartTime = ?, eventEndTime = ? WHERE guildId = ? AND scheduledEventId = ?`,
-      [startTime, endTime, guildId, scheduledEventId]
+      `UPDATE watch_parties SET eventStartTime = ?, eventEndTime = ?, scheduledEventId = ?, notified = false WHERE guildId = ? AND scheduledEventId = ?`,
+      [startTime, endTime, newScheduledEventId, guildId, scheduledEventId]
+    );
+  }
+}
+
+async function setNotified(guildId, scheduledEventId) {
+  if (db.isMongo()) {
+    await WatchPartyModel.updateOne(
+      { guildId, scheduledEventId },
+      { $set: { notified: true } }
+    );
+  } else {
+    await db.mysqlPool.execute(
+      `UPDATE watch_parties SET notified = true WHERE guildId = ? AND scheduledEventId = ?`,
+      [guildId, scheduledEventId]
     );
   }
 }
@@ -159,5 +174,6 @@ module.exports = {
   updateParty,
   getPartyById,
   getAllRepeating,
-  updatePartyEventTimes,
+  updatePartyEvent,
+  setNotified,
 };

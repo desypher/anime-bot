@@ -23,6 +23,25 @@ module.exports = function initializeWatchPartyCron(client) {
         const currentTime = dayjs();
         const eventEndTime = dayjs(party.eventEndTime);
 
+        const diffInMinutes = currentTime.diff(eventStartTime, "minute");
+        if (diffInMinutes >= 0 && diffInMinutes < 10 && !party.notified) {
+          const guild = client.guilds.cache.get(party.guildId);
+          if (!guild) continue;
+
+          const textChannel = guild.channels.cache.get(
+            process.env.WATCH_PARTY_TEXT_CHANNEL_ID
+          );
+          const roleId = process.env.WATCH_PARTY_ROLE_ID;
+
+          if (textChannel instanceof TextChannel) {
+            await textChannel.send({
+              content: `🎉 The watch party for **${party.animeTitle} - Episode ${party.currentEpisode}** is starting now! <@&${roleId}>`,
+            });
+
+            await watchParty.setNotified(party.guildId, party.scheduledEventId);
+          }
+        }
+
         if (currentTime.isAfter(eventEndTime)) {
           console.log(
             `Event for ${party.animeTitle} has ended, updating episode...`
@@ -66,7 +85,7 @@ async function createPartyEvent(guild, party, startTime, endTime) {
   const channelId = process.env.WATCH_PARTY_CHANNEL_ID;
   const voiceChannel = guild.channels.cache.get(channelId);
 
-  await guild.scheduledEvents.create({
+  const scheduledEvent = await guild.scheduledEvents.create({
     channel: voiceChannel,
     name: animeTitle,
     scheduledStartTime: startTime.tz("Africa/Johannesburg").toDate(),
@@ -80,9 +99,10 @@ async function createPartyEvent(guild, party, startTime, endTime) {
     image: await fetchAndConvertImage(party.coverImage),
   });
 
-  await watchParty.updatePartyEventTimes(
+  await watchParty.updatePartyEvent(
     guildId,
     party.scheduledEventId,
+    scheduledEvent.id,
     startTime.toDate(),
     endTime.toDate()
   );

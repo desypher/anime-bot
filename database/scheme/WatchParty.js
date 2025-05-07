@@ -15,6 +15,7 @@ const WatchPartySchema = new mongoose.Schema({
   eventStartTime: { type: Date, default: null },
   eventEndTime: { type: Date, default: null },
   scheduledEventId: { type: String, default: null },
+  notified: { type: Boolean, default: false },
 });
 
 module.exports = mongoose.model("WatchParty", WatchPartySchema);
