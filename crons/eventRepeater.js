@@ -15,16 +15,17 @@ module.exports = function initializeWatchPartyCron(client) {
       const repeatingParties = await watchParty.getAllRepeating();
 
       for (const party of repeatingParties) {
-        if (party.paused) {
-          console.log(`Skipping ${party.animeTitle} watch party due to pause.`);
-          continue;
-        }
-
-        const currentTime = dayjs();
+        const currentTime = dayjs().tz("Africa/Johannesburg");
         const eventEndTime = dayjs(party.eventEndTime);
 
-        const diffInMinutes = currentTime.diff(eventStartTime, "minute");
-        if (diffInMinutes >= 0 && diffInMinutes < 10 && !party.notified) {
+        const startTime = dayjs(party.eventStartTime).tz("Africa/Johannesburg"); // assuming this is ISO format or Date
+
+        const minutesUntilStart = startTime.diff(currentTime, "minute");
+        if (
+          minutesUntilStart <= 15 &&
+          minutesUntilStart >= 0 &&
+          !party.notified
+        ) {
           const guild = client.guilds.cache.get(party.guildId);
           if (!guild) continue;
 
@@ -32,14 +33,18 @@ module.exports = function initializeWatchPartyCron(client) {
             process.env.WATCH_PARTY_TEXT_CHANNEL_ID
           );
           const roleId = process.env.WATCH_PARTY_ROLE_ID;
-
-          if (textChannel instanceof TextChannel) {
+          if (textChannel) {
             await textChannel.send({
-              content: `🎉 The watch party for **${party.animeTitle} - Episode ${party.currentEpisode}** is starting soon! See you in <#${WATCH_PARTY_CHANNEL_ID}> <@&${roleId}>`,
+              content: `🎉 The watch party for **${party.animeTitle} - Episode ${party.currentEpisode}** is starting soon! See you in <#${process.env.WATCH_PARTY_CHANNEL_ID}> <@&${roleId}>`,
             });
 
             await watchParty.setNotified(party.guildId, party.scheduledEventId);
           }
+        }
+
+        if (party.paused) {
+          console.log(`Skipping ${party.animeTitle} watch party due to pause.`);
+          continue;
         }
 
         if (currentTime.isAfter(eventEndTime)) {
