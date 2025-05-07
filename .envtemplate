@@ -10,4 +10,4 @@ MYSQL_HOST=
 MYSQL_USERNAME=
 MYSQL_PASSWORD=
 MYSQL_DATABASE=
-TZ=Africa/Johannesburg
+TZ="Africa/Johannesburg"
