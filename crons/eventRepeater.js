@@ -35,7 +35,7 @@ module.exports = function initializeWatchPartyCron(client) {
 
           if (textChannel instanceof TextChannel) {
             await textChannel.send({
-              content: `🎉 The watch party for **${party.animeTitle} - Episode ${party.currentEpisode}** is starting now! <@&${roleId}>`,
+              content: `🎉 The watch party for **${party.animeTitle} - Episode ${party.currentEpisode}** is starting soon! See you in <#${WATCH_PARTY_CHANNEL_ID}> <@&${roleId}>`,
             });
 
             await watchParty.setNotified(party.guildId, party.scheduledEventId);
