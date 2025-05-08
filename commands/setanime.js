@@ -90,7 +90,7 @@ module.exports = {
         .setColor("Purple");
 
       await interaction.editReply({
-        content: `Watch party set for **${anime.title.romaji}**!`,
+        content: `📺 Watch party set for **${anime.title.romaji}**!`,
         embeds: [embed],
       });
 
