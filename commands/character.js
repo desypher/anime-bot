@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const { fetchFromAniList } = require("../utils/anilist");
+const { stripHtml } = require("../utils/stripHtml");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -38,9 +39,11 @@ module.exports = {
       const embed = new EmbedBuilder()
         .setTitle(character.name.full)
         .setDescription(
-          character.description?.slice(0, 1024) || "No description available."
+          stripHtml(character.description)?.slice(0, 1024) ||
+            "No description available."
         )
         .setURL(character.siteUrl)
+        .setColor("Random")
         .setThumbnail(character.image.large)
         .setFooter({ text: character.name.native || "" });
 

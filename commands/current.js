@@ -2,6 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const { gql } = require("graphql-tag");
 const CurrentAnime = require("../database/helpers/currentAnime");
 const { fetchFromAniList } = require("../utils/anilist");
+const { stripHtml } = require("../utils/stripHtml");
 
 const query = gql`
   query ($id: Int) {
@@ -38,7 +39,7 @@ module.exports = {
       const response = await fetchFromAniList(query, variables);
       const anime = response.Media;
       const cleanDescription = anime.description
-        ? anime.description
+        ? stripHtml(anime.description)
         : "No description available.";
 
       const embed = new EmbedBuilder()

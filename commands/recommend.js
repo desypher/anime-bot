@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const { gql } = require("graphql-tag");
 const { fetchFromAniList } = require("../utils/anilist");
+const { stripHtml } = require("../utils/stripHtml");
 
 const topAnimeQuery = gql`
   query ($page: Int) {
@@ -61,9 +62,9 @@ module.exports = {
           .setTitle(anime.title.romaji || anime.title.english)
           .setThumbnail(anime.coverImage.large)
           .setDescription(
-            anime.description?.length > 300
-              ? anime.description.slice(0, 300) + "..."
-              : anime.description || "No description available."
+            stripHtml(anime.description)?.length > 300
+              ? stripHtml(anime.description).slice(0, 300) + "..."
+              : stripHtml(anime.description) || "No description available."
           )
           .addFields(
             {

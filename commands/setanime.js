@@ -6,6 +6,7 @@ const {
 const { gql } = require("graphql-tag");
 const currentAnime = require("../database/helpers/currentAnime");
 const { fetchFromAniList } = require("../utils/anilist");
+const { stripHtml } = require("../utils/stripHtml");
 
 const query = gql`
   query ($search: String) {
@@ -67,7 +68,7 @@ module.exports = {
       );
 
       const cleanDescription = anime.description
-        ? anime.description
+        ? stripHtml(anime.description)
         : "No description available.";
       // Create Embed
       const embed = new EmbedBuilder()

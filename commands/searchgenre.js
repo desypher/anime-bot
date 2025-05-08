@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const { fetchFromAniList } = require("../utils/anilist");
 const GENRES = require("../constants/genres");
+const { stripHtml } = require("../utils/stripHtml");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -27,9 +28,15 @@ module.exports = {
             }
             description(asHtml: false)
             coverImage {
-              large
+                large
             }
-            siteUrl
+            averageScore
+            episodes
+            format
+            genres
+            startDate {
+                year
+            }
           }
         }
       }
@@ -44,10 +51,32 @@ module.exports = {
 
       const embeds = results.map((anime) =>
         new EmbedBuilder()
-          .setTitle(anime.title.english || anime.title.romaji)
-          .setDescription(anime.description?.slice(0, 300) + "...")
-          .setURL(anime.siteUrl)
+          .setTitle(anime.title.romaji || anime.title.english)
           .setThumbnail(anime.coverImage.large)
+          .setDescription(
+            stripHtml(anime.description)?.length > 300
+              ? stripHtml(anime.description).slice(0, 300) + "..."
+              : stripHtml(anime.description) || "No description available."
+          )
+          .addFields(
+            {
+              name: "Score",
+              value: `${anime.averageScore || "N/A"}/100`,
+              inline: true,
+            },
+            {
+              name: "Episodes",
+              value: anime.episodes?.toString() || "Unknown",
+              inline: true,
+            },
+            { name: "Format", value: anime.format || "Unknown", inline: true },
+            {
+              name: "Genres",
+              value: anime.genres.slice(0, 3).join(", ") || "N/A",
+            }
+          )
+          .setFooter({ text: `Year: ${anime.startDate.year || "Unknown"}` })
+          .setColor("Random")
       );
 
       await interaction.reply({ embeds });

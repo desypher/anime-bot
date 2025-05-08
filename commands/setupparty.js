@@ -6,6 +6,7 @@ const dayjs = require("dayjs");
 const utc = require("dayjs/plugin/utc");
 const timezone = require("dayjs/plugin/timezone");
 const { fetchFromAniList } = require("../utils/anilist");
+const { stripHtml } = require("../utils/stripHtml");
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -93,7 +94,8 @@ module.exports = {
       const anime = animeData.Media;
 
       const description = `📖 ${
-        anime.description?.substring(0, 800) || "No synopsis available."
+        stripHtml(anime.description)?.substring(0, 800) ||
+        "No synopsis available."
       }
         🎬 Episode ${episode}${season ? ` • Season: ${season}` : ""}`;
 

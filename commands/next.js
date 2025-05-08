@@ -12,7 +12,6 @@ const query = gql`
       coverImage {
         large
       }
-      description(asHtml: false)
       episodes
     }
   }
