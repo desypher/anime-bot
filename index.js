@@ -11,7 +11,7 @@ const fs = require("fs");
 const path = require("path");
 const CurrentAnime = require("./database/helpers/currentAnime");
 const db = require("./db");
-const { env } = require("process");
+const { isValidTimeZone } = require("./utils/validateTimeZone");
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -26,9 +26,27 @@ for (const file of commandFiles) {
 }
 
 client.once("ready", async () => {
-  console.log(`Logged in as ${client.user.tag}`);
+  console.log(`✅ Logged in as ${client.user.tag}`);
   initializeWatchPartyCron(client);
-  console.log("Cron started");
+  console.log("⏳ Cron started");
+  console.log(
+    `Current timezone detected as ${
+      Intl.DateTimeFormat().resolvedOptions().timeZone
+    }`
+  );
+  if (process.env.TIMEZONE) {
+    console.log(`🔄 Updating timezone to ${process.env.TIMEZONE}`);
+    if (!isValidTimeZone(process.env.TIMEZONE)) {
+      console.error(
+        `❌ Invalid timezone: ${process.env.TIMEZONE}. Please set a valid timezone.`
+      );
+    } else {
+      process.env.TZ = process.env.TIMEZONE;
+      console.log(
+        `🕒 Timezone set to ${Intl.DateTimeFormat().resolvedOptions().timeZone}`
+      );
+    }
+  }
   await db.initDatabases();
 
   const currentAnime = await CurrentAnime.getCurrent(process.env.GUILD_ID);
@@ -43,6 +61,9 @@ client.once("ready", async () => {
       activities: [{ name: "anime", type: ActivityType.Watching }],
     });
   }
+  console.log(
+    `✅ ${process.env.BOT_NAME || "Terebi"} has successfully started!`
+  );
 });
 
 client.on("interactionCreate", async (interaction) => {

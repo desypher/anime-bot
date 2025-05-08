@@ -20,7 +20,7 @@ module.exports = function initializeWatchPartyCron(client) {
           continue;
         }
 
-        const currentTime = dayjs().tz(process.env.TZ);
+        const currentTime = dayjs();
         const eventEndTime = dayjs(party.eventEndTime);
 
         if (currentTime.isAfter(eventEndTime)) {
@@ -35,10 +35,18 @@ module.exports = function initializeWatchPartyCron(client) {
             party.currentEpisode + 1
           );
 
-          const nextEpisodeTime = dayjs().add(1, "week");
-          const newEventStartTime = nextEpisodeTime
-            .hour(party.time.split(":")[0])
-            .minute(party.time.split(":")[1]);
+          // Safely parse hour and minute
+          const [hourStr, minuteStr] = party.time.split(":");
+          const hour = parseInt(hourStr, 10);
+          const minute = parseInt(minuteStr, 10);
+
+          // Schedule next episode for the same time next week
+          const nextEpisodeTime = dayjs()
+            .add(1, "week")
+            .hour(hour)
+            .minute(minute)
+            .second(0);
+          const newEventStartTime = nextEpisodeTime;
           const newEventEndTime = newEventStartTime.add(
             parseDuration(party.duration),
             "minute"
@@ -71,11 +79,9 @@ module.exports = function initializeWatchPartyCron(client) {
           continue;
         }
 
-        const currentTime = dayjs().tz(process.env.TZ);
-        const eventEndTime = dayjs(party.eventEndTime);
+        const currentTime = dayjs();
 
-        const startTime = dayjs(party.eventStartTime).tz(process.env.TZ); // assuming this is ISO format or Date
-
+        const startTime = dayjs(party.eventStartTime);
         const minutesUntilStart = startTime.diff(currentTime, "minute");
         if (
           minutesUntilStart <= 15 &&
@@ -112,8 +118,8 @@ async function createPartyEvent(guild, party, startTime, endTime) {
   const scheduledEvent = await guild.scheduledEvents.create({
     channel: voiceChannel,
     name: animeTitle,
-    scheduledStartTime: startTime.tz(process.env.TZ).toDate(),
-    scheduledEndTime: endTime.tz(process.env.TZ).toDate(),
+    scheduledStartTime: startTime.toDate(),
+    scheduledEndTime: endTime.toDate(),
     privacyLevel: 2,
     entityType: 2,
     description: `🎬 Episode ${currentEpisode + 1}`,
@@ -127,8 +133,8 @@ async function createPartyEvent(guild, party, startTime, endTime) {
     guildId,
     party.scheduledEventId,
     scheduledEvent.id,
-    startTime.tz(process.env.TZ).toDate(),
-    endTime.tz(process.env.TZ).toDate()
+    startTime.toDate(),
+    endTime.toDate()
   );
 }
 

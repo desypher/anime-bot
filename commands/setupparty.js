@@ -146,21 +146,26 @@ module.exports = {
         Saturday: 6,
       };
 
-      // Convert day/time to Date object (next occurrence)
       const now = dayjs();
-      const targetDay = dayjs().day(dayMapping[day]); // Get the target day
-      const targetDate = targetDay.isBefore(now, "day")
-        ? targetDay.add(1, "week")
-        : targetDay;
+      const todayIndex = now.day();
+      const targetIndex = dayMapping[day];
 
-      const [hour, minutePart] = time.toLowerCase().replace(" ", "").split(":");
-      const minute = parseInt(minutePart) || 0;
-      const eventHour = parseInt(hour);
-      const startTime = targetDate
-        .tz(process.env.TZ)
-        .hour(eventHour)
+      let [hour, minute] = time.split(":").map(Number);
+
+      let targetDay = dayjs()
+        .day(targetIndex)
+        .hour(hour)
         .minute(minute)
         .second(0);
+
+      if (
+        (targetIndex === todayIndex && targetDay.isBefore(now)) ||
+        targetIndex < todayIndex
+      ) {
+        targetDay = targetDay.add(1, "week");
+      }
+
+      const startTime = targetDay;
       const endTime = startTime.add(parseDuration(duration), "minute");
 
       const channelId = process.env.WATCH_PARTY_CHANNEL_ID;
@@ -193,8 +198,8 @@ module.exports = {
         duration: duration,
         repeat: repeat,
         scheduledEventId: scheduledEvent.id,
-        eventStartTime: startTime.tz(process.env.TZ).toDate(),
-        eventEndTime: endTime.tz(process.env.TZ).toDate(),
+        eventStartTime: startTime.toDate(),
+        eventEndTime: endTime.toDate(),
       });
     } catch (err) {
       console.error(err);
