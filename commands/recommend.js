@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const { gql } = require("graphql-tag");
-
-const endpoint = "https://graphql.anilist.co";
+const { fetchFromAniList } = require("../utils/anilist");
 
 const topAnimeQuery = gql`
   query ($page: Int) {
@@ -47,24 +46,24 @@ module.exports = {
       ];
 
       for (const page of pages) {
-        const response = await request(endpoint, topAnimeQuery, { page });
+        const response = await fetchFromAniList(topAnimeQuery, {
+          page,
+        });
         allAnime.push(...response.Page.media);
       }
 
       // Shuffle and pick 5 unique anime
       const shuffled = allAnime.sort(() => 0.5 - Math.random());
       const recommendations = shuffled.slice(0, 5);
-      const stripHtml = (html) =>
-        html != null ? html.replace(/<\/?[^>]+(>|$)/g, "") : "";
 
       const embeds = recommendations.map((anime) =>
         new EmbedBuilder()
           .setTitle(anime.title.romaji || anime.title.english)
           .setThumbnail(anime.coverImage.large)
           .setDescription(
-            stripHtml(anime.description)?.length > 300
-              ? stripHtml(anime.description).slice(0, 300) + "..."
-              : stripHtml(anime.description) || "No description available."
+            anime.description?.length > 300
+              ? anime.description.slice(0, 300) + "..."
+              : anime.description || "No description available."
           )
           .addFields(
             {

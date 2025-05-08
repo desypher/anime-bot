@@ -1,8 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const { gql } = require("graphql-tag");
 const currentAnime = require("../database/helpers/currentAnime");
-
-const endpoint = "https://graphql.anilist.co";
+const { fetchFromAniList } = require("../utils/anilist");
 
 const query = gql`
   query ($id: Int) {
@@ -44,8 +43,7 @@ module.exports = {
     }
 
     try {
-      const { request } = await import("graphql-request");
-      const response = await request(endpoint, query, { id: party.animeId });
+      const response = await fetchFromAniList(query, { id: party.animeId });
       const anime = response.Media;
 
       const totalEpisodes = anime.episodes || null;

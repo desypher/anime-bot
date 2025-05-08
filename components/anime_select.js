@@ -1,7 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
 const { gql } = require("graphql-tag");
-
-const endpoint = "https://graphql.anilist.co";
+const { fetchFromAniList } = require("../utils/anilist");
 
 const detailQuery = gql`
   query ($id: Int) {
@@ -40,15 +39,12 @@ module.exports = {
       });
     }
 
-    const { request } = await import("graphql-request");
     const animeId = parseInt(interaction.values[0]);
-    const detail = await request(endpoint, detailQuery, { id: animeId });
+    const detail = await fetchFromAniList(detailQuery, { id: animeId });
     const anime = detail.Media;
 
-    const stripHtml = (html) =>
-      html != null ? html.replace(/<\/?[^>]+(>|$)/g, "") : "";
     const cleanDescription = anime.description
-      ? stripHtml(anime.description)
+      ? anime.description
       : "No description available.";
 
     const embed = new EmbedBuilder()

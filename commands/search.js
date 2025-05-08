@@ -4,8 +4,7 @@ const {
   StringSelectMenuBuilder,
 } = require("discord.js");
 const { gql } = require("graphql-tag");
-
-const endpoint = "https://graphql.anilist.co";
+const { fetchFromAniList } = require("../utils/anilist");
 
 const searchQuery = gql`
   query ($search: String) {
@@ -37,8 +36,7 @@ module.exports = {
     await interaction.deferReply();
 
     try {
-      const { request } = await import("graphql-request");
-      const response = await request(endpoint, searchQuery, { search: title });
+      const response = await fetchFromAniList(searchQuery, { search: title });
       const results = response.Page.media;
 
       if (!results.length) {

@@ -2,10 +2,10 @@ const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const { gql } = require("graphql-tag");
 const currentAnime = require("../database/helpers/currentAnime");
 const watchParty = require("../database/helpers/watchparties");
-const endpoint = "https://graphql.anilist.co";
 const dayjs = require("dayjs");
 const utc = require("dayjs/plugin/utc");
 const timezone = require("dayjs/plugin/timezone");
+const { fetchFromAniList } = require("../utils/anilist");
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -21,7 +21,7 @@ const searchAnimeQuery = gql`
       coverImage {
         large
       }
-      description
+      description(asHtml: false)
     }
   }
 `;
@@ -87,16 +87,13 @@ module.exports = {
     const guildId = interaction.guildId;
 
     try {
-      const { request } = await import("graphql-request");
-      const animeData = await request(endpoint, searchAnimeQuery, {
+      const animeData = await fetchFromAniList(searchAnimeQuery, {
         search: title,
       });
       const anime = animeData.Media;
-      const stripHtml = (html) =>
-        html != null ? html.replace(/<\/?[^>]+(>|$)/g, "") : "";
+
       const description = `📖 ${
-        stripHtml(anime.description)?.substring(0, 800) ||
-        "No synopsis available."
+        anime.description?.substring(0, 800) || "No synopsis available."
       }
         🎬 Episode ${episode}${season ? ` • Season: ${season}` : ""}`;
 
