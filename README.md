@@ -21,6 +21,8 @@ MYSQL_HOST=mysql_host
 MYSQL_USERNAME=mysql_username
 MYSQL_PASSWORD=mysql_password
 MYSQL_DATABASE=mysql_database
+TIMEZONE=timezone
+BOT_NAME=bot_name
 ```
 
 2. Run `npm install` in your terminal
