@@ -32,7 +32,7 @@ BOT_NAME=bot_name
 
 ## Commands
 
-- `/setupparty [day] [time] [duration] [title] [episode] [repeat] [season (optional)]` - Use this to create watch parties, automatically adds an event to the server. Repeat will be checked by a cron and added ever week on the same day. The current episode will be auto incremented.
+- `/setupparty [day] [time] [duration] [title] [episode] [repeat] [season (optional)]` - Use this to create watch parties, automatically adds an event to the server. Repeat will be checked by a cron and added every week on the same day. The current episode will be auto incremented.
 - `/pause` - Use this to select a watch party to pause or resume it, this will prevent the cron from creating a repeat event.
 - `/cancelparty` - Cancels the selected watch party.
 - `/listparties` - Displays all active watch parties.
