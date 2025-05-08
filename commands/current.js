@@ -41,7 +41,8 @@ module.exports = {
       const variables = { id: party.animeId };
       const response = await request(endpoint, query, variables);
       const anime = response.Media;
-      const stripHtml = (html) => html.replace(/<\/?[^>]+(>|$)/g, "");
+      const stripHtml = (html) =>
+        html != null ? html.replace(/<\/?[^>]+(>|$)/g, "") : "";
       const cleanDescription = anime.description
         ? stripHtml(anime.description)
         : "No description available.";

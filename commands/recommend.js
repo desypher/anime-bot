@@ -54,7 +54,8 @@ module.exports = {
       // Shuffle and pick 5 unique anime
       const shuffled = allAnime.sort(() => 0.5 - Math.random());
       const recommendations = shuffled.slice(0, 5);
-      const stripHtml = (html) => html.replace(/<\/?[^>]+(>|$)/g, "");
+      const stripHtml = (html) =>
+        html != null ? html.replace(/<\/?[^>]+(>|$)/g, "") : "";
 
       const embeds = recommendations.map((anime) =>
         new EmbedBuilder()

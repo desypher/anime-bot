@@ -92,7 +92,8 @@ module.exports = {
         search: title,
       });
       const anime = animeData.Media;
-      const stripHtml = (html) => html.replace(/<\/?[^>]+(>|$)/g, "");
+      const stripHtml = (html) =>
+        html != null ? html.replace(/<\/?[^>]+(>|$)/g, "") : "";
       const description = `📖 ${
         stripHtml(anime.description)?.substring(0, 800) ||
         "No synopsis available."

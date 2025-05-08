@@ -45,7 +45,8 @@ module.exports = {
     const detail = await request(endpoint, detailQuery, { id: animeId });
     const anime = detail.Media;
 
-    const stripHtml = (html) => html.replace(/<\/?[^>]+(>|$)/g, "");
+    const stripHtml = (html) =>
+      html != null ? html.replace(/<\/?[^>]+(>|$)/g, "") : "";
     const cleanDescription = anime.description
       ? stripHtml(anime.description)
       : "No description available.";

@@ -68,7 +68,8 @@ module.exports = {
         1
       );
 
-      const stripHtml = (html) => html.replace(/<\/?[^>]+(>|$)/g, "");
+      const stripHtml = (html) =>
+        html != null ? html.replace(/<\/?[^>]+(>|$)/g, "") : "";
       const cleanDescription = anime.description
         ? stripHtml(anime.description)
         : "No description available.";
