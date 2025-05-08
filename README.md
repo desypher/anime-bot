@@ -30,18 +30,18 @@ MYSQL_DATABASE=mysql_database
 
 ## Commands
 
-`/setupparty [day] [time] [duration] [title] [episode] [repeat] [season (optional)]` - Use this to create watch parties, automatically adds an event to the server. Repeat will be checked by a cron and added ever week on the same day. The current episode will be auto incremented.
-`/pause` - Use this to select a watch party to pause or resume it, this will prevent the cron from creating a repeat event.
-`/cancelparty` - Cancels the selected watch party.
-`/listparties` - Displays all active watch parties.
-`/current` - Shows the current anime being watched.
-`/searchanime [title]` - Searches for an anime then gives you a list to select from to give more details.
-`/searchgenre [genre]` - Gives you 5 recommendations from an autocomplete list of genres.
-`/recommend` - Gives you 5 random recommendations from high rated animes.
-`/character [name]` - Search for a character to get details on them.
-`/setepisode [number]` - Sets the current anime episode number (kinda useless at the moment)
-`/setanime [title]` - Sets the current anime of the bot (also useless but it does override the presence of the bot)
-`/next` - Increments the episode number of the current anime (also also useless right now)
+- `/setupparty [day] [time] [duration] [title] [episode] [repeat] [season (optional)]` - Use this to create watch parties, automatically adds an event to the server. Repeat will be checked by a cron and added ever week on the same day. The current episode will be auto incremented.
+- `/pause` - Use this to select a watch party to pause or resume it, this will prevent the cron from creating a repeat event.
+- `/cancelparty` - Cancels the selected watch party.
+- `/listparties` - Displays all active watch parties.
+- `/current` - Shows the current anime being watched.
+- `/searchanime [title]` - Searches for an anime then gives you a list to select from to give more details.
+- `/searchgenre [genre]` - Gives you 5 recommendations from an autocomplete list of genres.
+- `/recommend` - Gives you 5 random recommendations from high rated animes.
+- `/character [name]` - Search for a character to get details on them.
+- `/setepisode [number]` - Sets the current anime episode number (kinda useless at the moment)
+- `/setanime [title]` - Sets the current anime of the bot (also useless but it does override the presence of the bot)
+- `/next` - Increments the episode number of the current anime (also also useless right now)
 
 ## Using
 
