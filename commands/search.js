@@ -63,7 +63,7 @@ module.exports = {
       });
     } catch (error) {
       console.error(error);
-      interaction.editReply("Something went wrong while searching.");
+      interaction.editReply("❌ Something went wrong while searching.");
     }
   },
 };

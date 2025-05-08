@@ -103,7 +103,7 @@ module.exports = {
       });
     } catch (error) {
       console.error(error);
-      return interaction.editReply("Failed to fetch anime information.");
+      return interaction.editReply("❌ Failed to fetch anime information.");
     }
   },
 };

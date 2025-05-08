@@ -32,7 +32,7 @@ module.exports = {
 
     if (!party) {
       return interaction.reply({
-        content: "No anime is currently set. Use `/setanime` first.",
+        content: "⚠️ No anime is currently set. Use `/setanime` first.",
         ephemeral: true,
       });
     }

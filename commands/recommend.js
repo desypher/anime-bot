@@ -94,7 +94,7 @@ module.exports = {
     } catch (error) {
       console.error(error);
       await interaction.editReply(
-        "Something went wrong fetching recommendations."
+        "❌ Something went wrong fetching recommendations."
       );
     }
   },
