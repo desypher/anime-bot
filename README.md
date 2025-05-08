@@ -56,4 +56,4 @@ MYSQL_DATABASE=mysql_database
 
 ## Support
 
-![GitHub Sponsors](https://img.shields.io/github/sponsors/:desypher)
+![GitHub Sponsors](https://img.shields.io/github/sponsors/desypher)
