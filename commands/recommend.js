@@ -1,4 +1,8 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  MessageFlags,
+} = require("discord.js");
 const { gql } = require("graphql-tag");
 const { fetchFromAniList } = require("../utils/anilist");
 const { stripHtml } = require("../utils/stripHtml");
@@ -37,7 +41,6 @@ module.exports = {
     await interaction.deferReply();
 
     try {
-      const { request } = await import("graphql-request");
       const allAnime = [];
 
       // Fetch top anime from 2 random pages to increase variety
@@ -93,9 +96,10 @@ module.exports = {
       });
     } catch (error) {
       console.error(error);
-      await interaction.editReply(
-        "❌ Something went wrong fetching recommendations."
-      );
+      await interaction.editReply({
+        content: "❌ Something went wrong fetching recommendations.",
+        flags: MessageFlags.Ephemeral,
+      });
     }
   },
 };

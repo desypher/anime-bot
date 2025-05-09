@@ -1,4 +1,8 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  MessageFlags,
+} = require("discord.js");
 const { gql } = require("graphql-tag");
 const currentAnime = require("../database/helpers/currentAnime");
 const watchParty = require("../database/helpers/watchparties");
@@ -68,14 +72,13 @@ module.exports = {
   async execute(interaction) {
     const allowedRoleId = process.env.WATCH_PARTY_HOST_ROLE_ID;
 
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
     if (!interaction.member.roles.cache.has(allowedRoleId)) {
       return interaction.reply({
         content: "❌ Only Watch Party Hosts can use this command.",
-        ephemeral: true,
       });
     }
-
-    await interaction.deferReply();
 
     const day = interaction.options.getString("day");
     const time = interaction.options.getString("time");

@@ -2,6 +2,7 @@ const {
   SlashCommandBuilder,
   StringSelectMenuBuilder,
   ActionRowBuilder,
+  MessageFlags,
 } = require("discord.js");
 const watchParty = require("../database/helpers/watchparties");
 
@@ -16,7 +17,7 @@ module.exports = {
     if (parties.length === 0) {
       return interaction.reply({
         content: "❌ No watch parties available.",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -41,7 +42,7 @@ module.exports = {
     await interaction.reply({
       content: "Please select a watch party to pause or resume.",
       components: [row],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   },
 };

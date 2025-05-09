@@ -1,4 +1,8 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  MessageFlags,
+} = require("discord.js");
 const { gql } = require("graphql-tag");
 const CurrentAnime = require("../database/helpers/currentAnime");
 const { fetchFromAniList } = require("../utils/anilist");
@@ -30,7 +34,7 @@ module.exports = {
     if (!party) {
       return interaction.reply({
         content: "No anime is currently set. Use `/setanime` first.",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -69,7 +73,7 @@ module.exports = {
       console.error(error);
       await interaction.reply({
         content: "Failed to fetch anime data from AniList.",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   },

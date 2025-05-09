@@ -3,6 +3,7 @@ const {
   ActionRowBuilder,
   StringSelectMenuBuilder,
   StringSelectMenuOptionBuilder,
+  MessageFlags,
 } = require("discord.js");
 const WatchParty = require("../database/helpers/watchparties");
 
@@ -18,16 +19,17 @@ module.exports = {
     if (!interaction.member.roles.cache.has(allowedRoleId)) {
       return interaction.reply({
         content: "❌ Only Watch Party Hosts can use this command.",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
     const guildId = interaction.guildId;
     const parties = await WatchParty.getPartiesByGuild(guildId);
 
     if (!parties.length) {
-      return interaction.reply(
-        "😕 There are no scheduled watch parties to cancel."
-      );
+      return interaction.reply({
+        content: "😕 There are no scheduled watch parties to cancel.",
+        flags: MessageFlags.Ephemeral,
+      });
     }
 
     const options = parties.map((party) =>
@@ -46,7 +48,7 @@ module.exports = {
     await interaction.reply({
       content: "🗑️ Select a watch party to cancel:",
       components: [row],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   },
 };

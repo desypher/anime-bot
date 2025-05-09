@@ -1,4 +1,8 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  MessageFlags,
+} = require("discord.js");
 const WatchParty = require("../database/helpers/watchparties");
 
 module.exports = {
@@ -45,7 +49,10 @@ module.exports = {
       await interaction.editReply({ embeds });
     } catch (err) {
       console.error(err);
-      await interaction.editReply("❌ Failed to fetch watch parties.");
+      await interaction.editReply({
+        content: "❌ Failed to fetch watch parties.",
+        flags: MessageFlags.Ephemeral,
+      });
     }
   },
 };

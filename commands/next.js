@@ -1,4 +1,8 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  MessageFlags,
+} = require("discord.js");
 const { gql } = require("graphql-tag");
 const currentAnime = require("../database/helpers/currentAnime");
 const { fetchFromAniList } = require("../utils/anilist");
@@ -29,7 +33,7 @@ module.exports = {
     if (!interaction.member.roles.cache.has(allowedRoleId)) {
       return interaction.reply({
         content: "❌ Only Watch Party Hosts can use this command.",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
     const party = await currentAnime.getCurrent(interaction.guildId);
@@ -37,7 +41,7 @@ module.exports = {
     if (!party) {
       return interaction.reply({
         content: "😕 No anime is currently set. Use `/setanime` first.",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -51,7 +55,7 @@ module.exports = {
       if (totalEpisodes && nextEpisode > totalEpisodes) {
         return interaction.reply({
           content: `You've reached the end of **${anime.title.romaji}**! 🎉`,
-          ephemeral: false,
+          flags: 0,
         });
       }
 
@@ -80,7 +84,7 @@ module.exports = {
       console.error(error);
       await interaction.reply({
         content: "❌ Could not fetch anime data from AniList.",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   },

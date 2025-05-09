@@ -1,3 +1,4 @@
+const { MessageFlags } = require("discord.js");
 const watchParty = require("../database/helpers/watchparties");
 
 module.exports = {
@@ -12,7 +13,7 @@ module.exports = {
         if (!party) {
           return interaction.update({
             content: "❌ Watch party not found.",
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
           });
         }
 
@@ -29,12 +30,13 @@ module.exports = {
           content: `✅ Watch party for **${party.animeTitle}** is now ${
             newPausedState ? "paused" : "resumed"
           }.`,
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       } catch (err) {
         console.error(err);
         await interaction.update({
           content: "❌ An error occurred while pausing the watch party.",
+          flags: MessageFlags.Ephemeral,
           components: [],
         });
       }

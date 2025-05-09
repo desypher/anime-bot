@@ -2,6 +2,7 @@ const {
   SlashCommandBuilder,
   ActionRowBuilder,
   StringSelectMenuBuilder,
+  MessageFlags,
 } = require("discord.js");
 const { gql } = require("graphql-tag");
 const { fetchFromAniList } = require("../utils/anilist");
@@ -33,7 +34,7 @@ module.exports = {
 
   async execute(interaction) {
     const title = interaction.options.getString("title");
-    await interaction.deferReply();
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     try {
       const response = await fetchFromAniList(searchQuery, { search: title });
@@ -58,6 +59,7 @@ module.exports = {
       await interaction.editReply({
         content: "Select an anime from the list:",
         components: [row],
+        flags: MessageFlags.Ephemeral,
       });
     } catch (error) {
       console.error(error);

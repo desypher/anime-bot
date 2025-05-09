@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, MessageFlags } = require("discord.js");
 const { gql } = require("graphql-tag");
 const { fetchFromAniList } = require("../utils/anilist");
 const { stripHtml } = require("../utils/stripHtml");
@@ -36,7 +36,7 @@ module.exports = {
     if (interaction.user.id !== interaction.message.interaction.user.id) {
       return interaction.reply({
         content: "This menu isn't for you!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -76,7 +76,6 @@ module.exports = {
         }
       )
       .setColor("Blurple");
-
     await interaction.update({
       content: "Here is the anime you selected:",
       embeds: [embed],

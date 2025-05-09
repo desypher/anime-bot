@@ -5,6 +5,7 @@ const {
   GatewayIntentBits,
   Collection,
   ActivityType,
+  MessageFlags,
 } = require("discord.js");
 const mongoose = require("mongoose");
 const fs = require("fs");
@@ -76,7 +77,7 @@ client.on("interactionCreate", async (interaction) => {
       console.error(error);
       await interaction.reply({
         content: "There was an error executing this command!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   } else if (interaction.isStringSelectMenu()) {
@@ -87,7 +88,7 @@ client.on("interactionCreate", async (interaction) => {
       console.error(error);
       await interaction.reply({
         content: "There was an error handling your selection!",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   } else if (interaction.isAutocomplete()) {

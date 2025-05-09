@@ -2,6 +2,7 @@ const {
   SlashCommandBuilder,
   EmbedBuilder,
   ActivityType,
+  MessageFlags,
 } = require("discord.js");
 const { gql } = require("graphql-tag");
 const currentAnime = require("../database/helpers/currentAnime");
@@ -44,11 +45,11 @@ module.exports = {
     if (!interaction.member.roles.cache.has(allowedRoleId)) {
       return interaction.reply({
         content: "❌ Only Watch Party Hosts can use this command.",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
-    await interaction.deferReply();
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     try {
       const variables = { search };
@@ -92,6 +93,7 @@ module.exports = {
       await interaction.editReply({
         content: `📺 Watch party set for **${anime.title.romaji}**!`,
         embeds: [embed],
+        flags: 0,
       });
 
       interaction.client.user.setPresence({
@@ -100,7 +102,10 @@ module.exports = {
       });
     } catch (error) {
       console.error(error);
-      return interaction.editReply("❌ Failed to fetch anime information.");
+      return interaction.editReply({
+        content: "❌ Failed to fetch anime information.",
+        flags: MessageFlags.Ephemeral,
+      });
     }
   },
 };

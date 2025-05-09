@@ -1,3 +1,4 @@
+const { MessageFlags } = require("discord.js");
 const WatchParty = require("../database/helpers/watchparties");
 
 module.exports = {
@@ -30,6 +31,7 @@ module.exports = {
       await interaction.update({
         content: "❌ An error occurred while canceling the party.",
         components: [],
+        flags: MessageFlags.Ephemeral,
       });
     }
   },

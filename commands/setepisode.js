@@ -2,6 +2,7 @@ const {
   SlashCommandBuilder,
   EmbedBuilder,
   Integration,
+  MessageFlags,
 } = require("discord.js");
 const currentAnime = require("../database/helpers/currentAnime");
 
@@ -23,7 +24,7 @@ module.exports = {
     if (!interaction.member.roles.cache.has(allowedRoleId)) {
       return interaction.reply({
         content: "❌ Only Watch Party Hosts can use this command.",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
     const episode = interaction.options.getInteger("number");
@@ -33,7 +34,7 @@ module.exports = {
     if (!party) {
       return interaction.reply({
         content: "⚠️ No anime is currently set. Use `/setanime` first.",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
 
