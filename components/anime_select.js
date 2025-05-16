@@ -33,6 +33,7 @@ const detailQuery = gql`
         id
         site
       }
+      genres
     }
   }
 `;
@@ -83,6 +84,11 @@ module.exports = {
           name: "Score",
           value: `${anime.averageScore || "N/A"}/100`,
           inline: true,
+        },
+        {
+          name: "Genres",
+          value: anime.genres?.join(" | ") || "Unknown",
+          inline: false,
         }
       )
       .setColor("Random");
