@@ -1,4 +1,10 @@
-const { EmbedBuilder, MessageFlags } = require("discord.js");
+const {
+  EmbedBuilder,
+  MessageFlags,
+  ButtonBuilder,
+  ActionRowBuilder,
+  ButtonStyle,
+} = require("discord.js");
 const { gql } = require("graphql-tag");
 const { fetchFromAniList } = require("../utils/anilist");
 const { stripHtml } = require("../utils/stripHtml");
@@ -23,6 +29,10 @@ const detailQuery = gql`
       }
       format
       averageScore
+      trailer {
+        id
+        site
+      }
     }
   }
 `;
@@ -75,11 +85,69 @@ module.exports = {
           inline: true,
         }
       )
-      .setColor("Blurple");
+      .setColor("Random");
+
+    const trailerSite = anime.trailer?.site;
+    let trailerUrl = null;
+    if (trailerSite === "youtube") {
+      const trailerId = anime.trailer?.id;
+      if (trailerId) {
+        trailerUrl = `https://www.youtube.com/watch?v=${trailerId}`;
+      } else {
+        trailerUrl = null;
+      }
+    } else if (trailerSite === "dailymotion") {
+      const trailerId = anime.trailer?.id;
+      if (trailerId) {
+        trailerUrl = `https://www.dailymotion.com/video/${trailerId}`;
+      } else {
+        trailerUrl = null;
+      }
+    }
+
+    const infoButton = new ButtonBuilder()
+      .setCustomId("post_button")
+      .setLabel("Post to Channel")
+      .setStyle(ButtonStyle.Primary);
+
+    const trailerButton = new ButtonBuilder()
+      .setLabel("Watch Trailer")
+      .setStyle(ButtonStyle.Link);
+
+    const row = new ActionRowBuilder().addComponents(infoButton);
+
+    if (trailerUrl != null && trailerUrl != "") {
+      trailerButton.setURL(trailerUrl);
+      row.addComponents(trailerButton);
+    }
+
     await interaction.update({
       content: "Here is the anime you selected:",
       embeds: [embed],
-      components: [],
+      components: [row],
+    });
+
+    const filter = (i) =>
+      i.customId === "post_button" && i.user.id === interaction.user.id;
+
+    const collector = interaction.channel.createMessageComponentCollector({
+      filter,
+      time: 15000,
+    });
+    const publicRow = new ActionRowBuilder();
+    if (trailerUrl != null && trailerUrl != "") {
+      publicRow.addComponents(trailerButton);
+    }
+
+    collector.on("collect", async (i) => {
+      if (i.customId === "post_button") {
+        await i.deferUpdate();
+        await interaction.channel.send({
+          content: `<@${i.user.id}> shared this anime with you! 📺`,
+          embeds: [embed],
+          components: [publicRow],
+        });
+      }
     });
   },
 };
