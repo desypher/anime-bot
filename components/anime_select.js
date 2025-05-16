@@ -87,7 +87,7 @@ module.exports = {
         },
         {
           name: "Genres",
-          value: anime.genres?.join(" | ") || "Unknown",
+          value: anime.genres?.join(", ") || "Unknown",
           inline: false,
         }
       )
